@@ -1,10 +1,10 @@
 import { redirect } from '@sveltejs/kit';
 
 export function load({ cookies }) {
-    if (cookies.get("AuthToken") == undefined) {
+    let token = cookies.get("AuthToken");
+    if (token != undefined) {
+        return { tkn:token };
+    } else {
         redirect(301, "/login");
-    }
-    else {
-        redirect(301, "/home");
     }
 }
