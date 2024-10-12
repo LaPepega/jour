@@ -1,0 +1,1 @@
+// Functions for api calls to the dnevnik
