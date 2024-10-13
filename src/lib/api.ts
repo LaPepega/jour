@@ -1,13 +1,13 @@
 // Functions and interfaces for api calls to the dnevnik
 
 export interface Student {
-    firstName: string,
-    lastName: string,
-    surName: string,
-    className: string,
-    orgName: string,
-    id: string,
-    avatarId: string
+    firstName: string   ,
+    lastName: string ,
+    surName: string ,
+    className: string ,
+    orgName: string ,
+    id: string ,
+    avatarId: string ,
 }
 
 export interface Lesson {
@@ -20,13 +20,36 @@ export interface Lesson {
     beginHour: number,
     beginMinute: number,
     endHour: number,
-    endMinute: number
+    endMinute: number,
+    homework: Homework | undefined
 }
 
 export interface DaySchedule {
-    date: Date,
+    date: string,
     weekdayName: string,
     lessons: Lesson[]
+}
+
+export interface Homework {
+    id: string,
+    isDone: boolean,
+    lessonName: string,
+    lessonNumber: number,
+    startTime: Date,
+    endTime: Date,
+    lessonId: string,
+    description: string,
+    isHomeworkElectronicForm: boolean,
+}
+
+export async function queryHomework(token: string, studentId: string, date: string | undefined): Promise<Homework[]> {
+    let endpoint = `/homework?studentId=${studentId}` + (date != undefined ? `&date=${date}` : "");
+    const resp = await queryEndpoint(endpoint, token);
+    let hw: Homework[] = [];
+    for (let w of resp.homeworks) {
+        hw.push(w);
+    }
+    return hw;
 }
 
 export async function querySchedule(token: string, studentId: string):Promise<DaySchedule[]> {
