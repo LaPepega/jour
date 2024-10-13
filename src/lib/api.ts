@@ -1,6 +1,6 @@
 // Functions and interfaces for api calls to the dnevnik
 
-interface Student {
+export interface Student {
     firstName: string,
     lastName: string,
     surName: string,
@@ -10,7 +10,7 @@ interface Student {
     avatarId: string
 }
 
-interface Lesson {
+export interface Lesson {
     id: string,
     lessonid: string,
     lessonName: string,
@@ -23,7 +23,7 @@ interface Lesson {
     endMinute: number
 }
 
-interface DaySchedule {
+export interface DaySchedule {
     date: Date,
     weekdayName: string,
     lessons: Lesson[]
