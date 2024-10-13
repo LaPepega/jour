@@ -20,19 +20,19 @@
 	onMount(async () => {
 		st = await queryStudent(token);
 		sc = await querySchedule(token, st.id);
-		/*for (let day of sc) {
-			let dayHW = await queryHomework(token, st.id, day.date.split('T')[0]);
+		for (let day in sc) {
+			let dayHW = await queryHomework(token, st.id, sc[day].date.split('T')[0]);
 			console.log(dayHW);
 
-			for (let lesson of day.lessons) {
+			for (let l in sc[day].lessons) {
 				for (let hw of dayHW) {
-					if (hw.lessonNumber == lesson.number) {
-						lesson.homework = hw;
+					if (hw.lessonNumber == sc[day].lessons[l].number) {
+						sc[day].lessons[l].homework = hw;
 					}
 				}
-				console.log(lesson.homework?.description);
 			}
-		}*/
+		}
+		console.log(sc[0].lessons[0].homework?.description);
 	});
 </script>
 
@@ -43,7 +43,9 @@
 			{#each day.lessons as l}
 				<div class="mb-3 table-row">
 					<p class=" table-cell w-20">{l.lessonName}</p>
-					<!---<p class=" table-cell">{l.homework?.description}</p>--->
+					{#if l.homework}
+						<p class=" table-cell">{l.homework?.description}</p>
+					{/if}
 				</div>
 			{/each}
 		</div>
