@@ -38,13 +38,14 @@
 
 <div class=" flex w-fit flex-col md:h-screen md:flex-wrap">
 	{#each sc as day}
-		<div class=" m-3 table w-80 rounded-xl bg-white p-3">
+		<div class=" m-3 w-80 rounded-xl bg-white p-3">
 			<p class=" text-center text-slate-700">{day.weekdayName}</p>
 			{#each day.lessons as l}
-				<div class="mb-3 table-row">
-					<p class=" table-cell w-20">{l.lessonName}</p>
+				<hr class=" border-slate-900" />
+				<div class="mb-3">
+					<p class=" w-20">{l.lessonName}</p>
 					{#if l.homework}
-						<p class=" table-cell">{l.homework?.description}</p>
+						<p class="break-words text-slate-500">{l.homework?.description}</p>
 					{/if}
 				</div>
 			{/each}
