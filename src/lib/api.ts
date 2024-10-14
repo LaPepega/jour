@@ -21,7 +21,8 @@ export interface Lesson {
     beginMinute: number,
     endHour: number,
     endMinute: number,
-    homework: Homework | undefined
+    homework: Homework | undefined,
+    grades: number[] | undefined
 }
 
 export interface DaySchedule {
@@ -42,6 +43,25 @@ export interface Homework {
     isHomeworkElectronicForm: boolean,
 }
 
+export interface GradesResponse {
+    grades: number[],
+    lessonNumber: number,
+    date: string
+}
+
+// Don't question it
+export async function queryGrades(token: string, studentId: string, date: string):Promise<GradesResponse[]> {
+    let resp = await queryEndpoint(`/estimate?studentId=${studentId}&date=${date}`, token);
+    let ret:GradesResponse[] = [];
+    for (let day of resp.weekGradesTable.days) {
+        for (let grade of day.lessonGrades) {
+            ret.push({grades: grade.grades, lessonNumber:grade.sequenceNumber, date: day.date.split('T')[0]})
+        }
+    }
+
+    return ret;
+}
+
 export async function queryHomework(token: string, studentId: string, date: string | undefined): Promise<Homework[]> {
     let endpoint = `/homework?studentId=${studentId}` + (date != undefined ? `&date=${date}` : "");
     const resp = await queryEndpoint(endpoint, token);
@@ -52,8 +72,8 @@ export async function queryHomework(token: string, studentId: string, date: stri
     return hw;
 }
 
-export async function querySchedule(token: string, studentId: string):Promise<DaySchedule[]> {
-    const resp = await queryEndpoint(`/schedule?studentId=${studentId}`, token);
+export async function querySchedule(token: string, studentId: string, date?: string):Promise<DaySchedule[]> {
+    const resp = await queryEndpoint(`/schedule?studentId=${studentId}${date ? "&date=" + date : ""}`, token);
     let schedule: DaySchedule[] = [];
     for (let day of resp.scheduleModel.days) {
         schedule.push({ 
