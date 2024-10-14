@@ -9,11 +9,10 @@
 		querySchedule,
 		queryStudent,
 		type DaySchedule,
-		type GradesResponse,
-		type Homework,
 		type Lesson,
 		type Student
 	} from '$lib/api';
+	import { currentWeek, nextWeek, prevWeek } from '$lib/navigation';
 
 	export let data: PageData;
 	const token = data.tkn;
@@ -52,30 +51,6 @@
 		}
 	}
 
-	function nextWeek() {
-		let currentDate = new Date(date);
-		var nextDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-
-		// TODO: a workaround to reload the page
-		goto('/blank').then(() => {
-			goto(`/home?date=${nextDate.toISOString().slice(0, 10)}`);
-		});
-	}
-
-	function prevWeek() {
-		let currentDate = new Date(date);
-		var prevDate = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
-		goto('/blank').then(() => {
-			goto(`/home?date=${prevDate.toISOString().slice(0, 10)}`);
-		});
-	}
-
-	function currentWeek() {
-		goto('/blank').then(() => {
-			goto('/home');
-		});
-	}
-
 	onMount(async () => {
 		st = await queryStudent(token);
 		sc = await querySchedule(token, st.id, date);
@@ -99,14 +74,20 @@
 <div class="fixed flex h-10 w-full items-center justify-center bg-white align-middle">
 	<div class="inline-flex">
 		{#if sc[0] && sc[sc.length - 1]}
-			<button class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white" on:click={prevWeek}
-				>&lt;&lt;</button
+			<button
+				class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white"
+				on:click={() => {
+					prevWeek(date);
+				}}>&lt;&lt;</button
 			>
 			<button on:click={currentWeek}>
-				{sc[0].date.split('T')[0]} - {sc[sc.length - 1].date.split('T')[0]}
+				{sc[0].date.split('T')[0]} &#x2022 {sc[sc.length - 1].date.split('T')[0]}
 			</button>
-			<button class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white" on:click={nextWeek}
-				>&gt;&gt;</button
+			<button
+				class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white"
+				on:click={() => {
+					nextWeek(date);
+				}}>&gt;&gt;</button
 			>
 		{/if}
 	</div>
