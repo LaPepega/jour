@@ -70,6 +70,12 @@
 		});
 	}
 
+	function currentWeek() {
+		goto('/blank').then(() => {
+			goto('/home');
+		});
+	}
+
 	onMount(async () => {
 		st = await queryStudent(token);
 		sc = await querySchedule(token, st.id, date);
@@ -96,7 +102,9 @@
 			<button class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white" on:click={prevWeek}
 				>&lt;&lt;</button
 			>
-			<p>{sc[0].date.split('T')[0]} - {sc[sc.length - 1].date.split('T')[0]}</p>
+			<button on:click={currentWeek}>
+				{sc[0].date.split('T')[0]} - {sc[sc.length - 1].date.split('T')[0]}
+			</button>
 			<button class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white" on:click={nextWeek}
 				>&gt;&gt;</button
 			>
