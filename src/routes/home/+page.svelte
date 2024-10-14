@@ -112,7 +112,7 @@
 				<p class=" text-left text-lg">{day.date.split('T')[0]}</p>
 			</div>
 			{#each day.lessons as l}
-				<hr class=" border-slate-900" />
+				<hr class=" border-slate-900 dark:border-slate-500" />
 				<div class="mb-3">
 					<p class="">{timeSpanString(l)} {l.lessonName}</p>
 					{#if l.homework}
