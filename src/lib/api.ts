@@ -21,7 +21,8 @@ export interface Lesson {
     beginMinute: number,
     endHour: number,
     endMinute: number,
-    homework: Homework | undefined
+    homework: Homework | undefined,
+    grades: number[] | undefined
 }
 
 export interface DaySchedule {
@@ -40,6 +41,25 @@ export interface Homework {
     lessonId: string,
     description: string,
     isHomeworkElectronicForm: boolean,
+}
+
+export interface GradesResponse {
+    grades: number[],
+    lessonNumber: number,
+    date: string
+}
+
+// Don't question it
+export async function queryGrades(token: string, studentId: string, date: string):Promise<GradesResponse[]> {
+    let resp = await queryEndpoint(`/estimate?studentId=${studentId}&date=${date}`, token);
+    let ret:GradesResponse[] = [];
+    for (let day of resp.weekGradesTable.days) {
+        for (let grade of day.lessonGrades) {
+            ret.push({grades: grade.grades, lessonNumber:grade.sequenceNumber, date: day.date.split('T')[0]})
+        }
+    }
+
+    return ret;
 }
 
 export async function queryHomework(token: string, studentId: string, date: string | undefined): Promise<Homework[]> {

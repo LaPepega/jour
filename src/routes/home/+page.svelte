@@ -1,12 +1,15 @@
 <script lang="ts">
+	// TODO: make this at least somewhat readable
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import {
+		queryGrades,
 		queryHomework,
 		querySchedule,
 		queryStudent,
 		type DaySchedule,
+		type GradesResponse,
 		type Homework,
 		type Lesson,
 		type Student
@@ -25,20 +28,46 @@
 			: '';
 	}
 
+	function gradeColor(g: string[]): string {
+		// FIXME: for some reason svelte passes g as string[]
+		switch (g[0]) {
+			case '0':
+				return 'text-red-600';
+
+			case '2':
+				return 'text-red-600';
+
+			case '3':
+				return 'text-orange-600';
+
+			case '4':
+				return 'text-green-600';
+
+			case '5':
+				return 'text-blue-600';
+
+			default:
+				return '';
+		}
+	}
+
 	onMount(async () => {
 		st = await queryStudent(token);
 		sc = await querySchedule(token, st.id);
+
+		let weekGR = await queryGrades(token, st.id, sc[0].date.split('T')[0]);
 		for (let day in sc) {
 			let dayHW = await queryHomework(token, st.id, sc[day].date.split('T')[0]);
-			console.log(dayHW);
-
 			for (let l in sc[day].lessons) {
 				sc[day].lessons[l].homework = dayHW.find(
-					(h) => h.lessonNumber == sc[day].lessons[l].number
+					(h) => h.lessonNumber === sc[day].lessons[l].number
 				);
+				sc[day].lessons[l].grades = weekGR.find(
+					(g) =>
+						g.date === sc[day].date.split('T')[0] && g.lessonNumber === sc[day].lessons[l].number
+				)?.grades;
 			}
 		}
-		console.log(sc[0].lessons[0].homework?.description);
 	});
 </script>
 
@@ -55,6 +84,14 @@
 					<p class="">{timeSpanString(l)} {l.lessonName}</p>
 					{#if l.homework}
 						<p class="break-words text-slate-500">{l.homework?.description}</p>
+					{/if}
+					{#if l.grades}
+						<div class="inline-flex">
+							{#each l.grades as g}
+								<!-- FIXME: for some reason svelte passes g as string[]-->
+								<p class={gradeColor(g)}>{g}</p>
+							{/each}
+						</div>
 					{/if}
 				</div>
 			{/each}
