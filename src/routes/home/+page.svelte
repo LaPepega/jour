@@ -9,11 +9,12 @@
 		querySchedule,
 		queryStudent,
 		type DaySchedule,
-		type GradesResponse,
-		type Homework,
 		type Lesson,
 		type Student
 	} from '$lib/api';
+	import { currentWeek, nextWeek, prevWeek } from '$lib/navigation';
+	import DarkThemeIcon from '$lib/DarkThemeIcon.svg.svelte';
+	import { DarkMode } from '$lib/stores';
 
 	export let data: PageData;
 	const token = data.tkn;
@@ -29,8 +30,8 @@
 			: '';
 	}
 
-	function gradeColor(g: string[]): string {
-		// FIXME: for some reason svelte passes g as string[]
+	function gradeColor(g: any): string {
+		//  for some reason svelte passes g as string[]
 		switch (g[0]) {
 			case '0':
 				return 'text-red-600';
@@ -45,29 +46,11 @@
 				return 'text-green-600';
 
 			case '5':
-				return 'text-blue-600';
+				return 'text-blue-600 dark:text-blue-400';
 
 			default:
 				return '';
 		}
-	}
-
-	function nextWeek() {
-		let currentDate = new Date(date);
-		var nextDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
-
-		// TODO: a workaround to reload the page
-		goto('/login').then(() => {
-			goto(`/home?date=${nextDate.toISOString().slice(0, 10)}`);
-		});
-	}
-
-	function prevWeek() {
-		let currentDate = new Date(date);
-		var prevDate = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
-		goto('/login').then(() => {
-			goto(`/home?date=${prevDate.toISOString().slice(0, 10)}`);
-		});
 	}
 
 	onMount(async () => {
@@ -90,25 +73,42 @@
 	});
 </script>
 
-<div class="fixed flex h-10 w-full items-center justify-center bg-white align-middle">
+<div
+	class="fixed flex h-10 w-full items-center justify-between bg-white align-middle dark:bg-slate-700"
+>
+	<button class="dark:invert"><img src="/avg.png" width="50" alt="avg" /></button>
 	<div class="inline-flex">
 		{#if sc[0] && sc[sc.length - 1]}
-			<button class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white" on:click={prevWeek}
-				>&lt;&lt;</button
+			<button
+				class="mx-2 h-fit rounded-full bg-slate-500 px-2 text-white"
+				on:click={() => {
+					prevWeek(date);
+				}}>&lt;&lt;</button
 			>
-			<p>{sc[0].date.split('T')[0]} - {sc[sc.length - 1].date.split('T')[0]}</p>
-			<button class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white" on:click={nextWeek}
-				>&gt;&gt;</button
+			<button on:click={currentWeek} class=" dark:text-white">
+				{sc[0].date.split('T')[0]} &#x2022 {sc[sc.length - 1].date.split('T')[0]}
+			</button>
+			<button
+				class="mx-2 h-fit rounded-full bg-slate-500 px-2 text-white"
+				on:click={() => {
+					nextWeek(date);
+				}}>&gt;&gt;</button
 			>
 		{/if}
 	</div>
+	<button
+		class="mx-1 dark:invert"
+		on:click={() => {
+			DarkMode.set(!$DarkMode);
+		}}><DarkThemeIcon size="25" /></button
+	>
 </div>
 
 <div class="flex w-fit flex-col pt-10 md:h-screen md:flex-wrap">
 	{#each sc as day}
-		<div class=" m-3 w-80 rounded-xl bg-white p-3">
+		<div class=" m-3 w-80 rounded-xl bg-white p-3 dark:bg-slate-800 dark:text-slate-200">
 			<div class="mb-2 flex justify-between">
-				<p class=" text-right text-lg text-slate-700">{day.weekdayName}</p>
+				<p class=" text-right text-lg text-slate-700 dark:text-slate-200">{day.weekdayName}</p>
 				<p class=" text-left text-lg">{day.date.split('T')[0]}</p>
 			</div>
 			{#each day.lessons as l}
@@ -116,12 +116,12 @@
 				<div class="mb-3">
 					<p class="">{timeSpanString(l)} {l.lessonName}</p>
 					{#if l.homework}
-						<p class="break-words text-slate-500">{l.homework?.description}</p>
+						<p class="break-words text-slate-500 dark:text-slate-400">{l.homework?.description}</p>
 					{/if}
 					{#if l.grades}
 						<div class="inline-flex">
 							{#each l.grades as g}
-								<!-- FIXME: for some reason svelte passes g as string[]-->
+								<!-- for some reason svelte passes g as string[]-->
 								<p class={gradeColor(g)}>{g}</p>
 							{/each}
 						</div>
