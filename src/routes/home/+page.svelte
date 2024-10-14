@@ -29,7 +29,7 @@
 	}
 
 	function gradeColor(g: any): string {
-		// FIXME: for some reason svelte passes g as string[]
+		//  for some reason svelte passes g as string[]
 		switch (g[0]) {
 			case '0':
 				return 'text-red-600';
@@ -110,7 +110,7 @@
 					{#if l.grades}
 						<div class="inline-flex">
 							{#each l.grades as g}
-								<!-- FIXME: for some reason svelte passes g as string[]-->
+								<!-- for some reason svelte passes g as string[]-->
 								<p class={gradeColor(g)}>{g}</p>
 							{/each}
 						</div>
