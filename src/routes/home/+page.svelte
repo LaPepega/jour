@@ -29,7 +29,7 @@
 			: '';
 	}
 
-	function gradeColor(g: string[]): string {
+	function gradeColor(g: any): string {
 		// FIXME: for some reason svelte passes g as string[]
 		switch (g[0]) {
 			case '0':
@@ -57,7 +57,7 @@
 		var nextDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
 
 		// TODO: a workaround to reload the page
-		goto('/login').then(() => {
+		goto('/blank').then(() => {
 			goto(`/home?date=${nextDate.toISOString().slice(0, 10)}`);
 		});
 	}
@@ -65,7 +65,7 @@
 	function prevWeek() {
 		let currentDate = new Date(date);
 		var prevDate = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
-		goto('/login').then(() => {
+		goto('/blank').then(() => {
 			goto(`/home?date=${prevDate.toISOString().slice(0, 10)}`);
 		});
 	}
