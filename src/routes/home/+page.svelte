@@ -8,6 +8,7 @@
 		queryStudent,
 		type DaySchedule,
 		type Homework,
+		type Lesson,
 		type Student
 	} from '$lib/api';
 
@@ -16,6 +17,13 @@
 
 	let st: Student | null = null;
 	let sc: DaySchedule[] = [];
+
+	// Yes i actually have to do this because of how bad the api is >:(
+	function timeSpanString(l: Lesson): string {
+		return l.beginHour && l.beginMinute && l.endHour && l.endMinute
+			? `${l.beginHour}:${l.beginMinute} - ${l.endHour}:${l.endMinute}`
+			: '';
+	}
 
 	onMount(async () => {
 		st = await queryStudent(token);
@@ -37,11 +45,14 @@
 <div class=" flex w-fit flex-col md:h-screen md:flex-wrap">
 	{#each sc as day}
 		<div class=" m-3 w-80 rounded-xl bg-white p-3">
-			<p class=" text-center text-slate-700">{day.weekdayName}</p>
+			<div class="mb-2 flex justify-between">
+				<p class=" text-right text-lg text-slate-700">{day.weekdayName}</p>
+				<p class=" text-left text-lg">{day.date.split('T')[0]}</p>
+			</div>
 			{#each day.lessons as l}
 				<hr class=" border-slate-900" />
 				<div class="mb-3">
-					<p class=" ">{l.lessonName}</p>
+					<p class="">{timeSpanString(l)} {l.lessonName}</p>
 					{#if l.homework}
 						<p class="break-words text-slate-500">{l.homework?.description}</p>
 					{/if}
