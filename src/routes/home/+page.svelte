@@ -25,11 +25,9 @@
 			console.log(dayHW);
 
 			for (let l in sc[day].lessons) {
-				for (let hw of dayHW) {
-					if (hw.lessonNumber == sc[day].lessons[l].number) {
-						sc[day].lessons[l].homework = hw;
-					}
-				}
+				sc[day].lessons[l].homework = dayHW.find(
+					(h) => h.lessonNumber == sc[day].lessons[l].number
+				);
 			}
 		}
 		console.log(sc[0].lessons[0].homework?.description);
@@ -43,7 +41,7 @@
 			{#each day.lessons as l}
 				<hr class=" border-slate-900" />
 				<div class="mb-3">
-					<p class=" w-20">{l.lessonName}</p>
+					<p class=" ">{l.lessonName}</p>
 					{#if l.homework}
 						<p class="break-words text-slate-500">{l.homework?.description}</p>
 					{/if}
