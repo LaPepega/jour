@@ -51,6 +51,10 @@
 		}
 	}
 
+	function nextWeek() {}
+
+	function prevWeek() {}
+
 	onMount(async () => {
 		st = await queryStudent(token);
 		sc = await querySchedule(token, st.id);
@@ -71,7 +75,17 @@
 	});
 </script>
 
-<div class=" flex w-fit flex-col md:h-screen md:flex-wrap">
+<div class="fixed flex h-10 w-full items-center justify-center bg-white align-middle">
+	<div class="inline-flex">
+		<button class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white">&lt;&lt;</button>
+		{#if sc[0] && sc[sc.length - 1]}
+			<p>{sc[0].date.split('T')[0]} - {sc[sc.length - 1].date.split('T')[0]}</p>
+		{/if}
+		<button class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white">&gt;&gt;</button>
+	</div>
+</div>
+
+<div class="flex w-fit flex-col pt-10 md:h-screen md:flex-wrap">
 	{#each sc as day}
 		<div class=" m-3 w-80 rounded-xl bg-white p-3">
 			<div class="mb-2 flex justify-between">
