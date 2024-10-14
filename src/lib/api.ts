@@ -72,8 +72,8 @@ export async function queryHomework(token: string, studentId: string, date: stri
     return hw;
 }
 
-export async function querySchedule(token: string, studentId: string):Promise<DaySchedule[]> {
-    const resp = await queryEndpoint(`/schedule?studentId=${studentId}`, token);
+export async function querySchedule(token: string, studentId: string, date?: string):Promise<DaySchedule[]> {
+    const resp = await queryEndpoint(`/schedule?studentId=${studentId}${date ? "&date=" + date : ""}`, token);
     let schedule: DaySchedule[] = [];
     for (let day of resp.scheduleModel.days) {
         schedule.push({ 

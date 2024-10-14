@@ -17,6 +17,7 @@
 
 	export let data: PageData;
 	const token = data.tkn;
+	const date = data.date;
 
 	let st: Student | null = null;
 	let sc: DaySchedule[] = [];
@@ -51,13 +52,27 @@
 		}
 	}
 
-	function nextWeek() {}
+	function nextWeek() {
+		let currentDate = new Date(date);
+		var nextDate = new Date(currentDate.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-	function prevWeek() {}
+		// TODO: a workaround to reload the page
+		goto('/login').then(() => {
+			goto(`/home?date=${nextDate.toISOString().slice(0, 10)}`);
+		});
+	}
+
+	function prevWeek() {
+		let currentDate = new Date(date);
+		var prevDate = new Date(currentDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+		goto('/login').then(() => {
+			goto(`/home?date=${prevDate.toISOString().slice(0, 10)}`);
+		});
+	}
 
 	onMount(async () => {
 		st = await queryStudent(token);
-		sc = await querySchedule(token, st.id);
+		sc = await querySchedule(token, st.id, date);
 
 		let weekGR = await queryGrades(token, st.id, sc[0].date.split('T')[0]);
 		for (let day in sc) {
@@ -77,11 +92,15 @@
 
 <div class="fixed flex h-10 w-full items-center justify-center bg-white align-middle">
 	<div class="inline-flex">
-		<button class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white">&lt;&lt;</button>
 		{#if sc[0] && sc[sc.length - 1]}
+			<button class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white" on:click={prevWeek}
+				>&lt;&lt;</button
+			>
 			<p>{sc[0].date.split('T')[0]} - {sc[sc.length - 1].date.split('T')[0]}</p>
+			<button class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white" on:click={nextWeek}
+				>&gt;&gt;</button
+			>
 		{/if}
-		<button class="mx-3 h-fit rounded-full bg-slate-600 px-2 text-white">&gt;&gt;</button>
 	</div>
 </div>
 
