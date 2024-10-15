@@ -15,10 +15,11 @@
 	import { currentWeek, nextWeek, prevWeek } from '$lib/navigation';
 	import DarkThemeIcon from '$lib/components/DarkThemeIcon.svg.svelte';
 	import { DarkMode } from '$lib/stores';
+	import Navbar from '$lib/components/Navbar.svelte';
 
 	export let data: PageData;
 	const token = data.tkn;
-	const date = data.date;
+	const pageDate = data.date;
 
 	let st: Student | null = null;
 	let sc: DaySchedule[] = [];
@@ -55,7 +56,7 @@
 
 	onMount(async () => {
 		st = await queryStudent(token);
-		sc = await querySchedule(token, st.id, date);
+		sc = await querySchedule(token, st.id, pageDate);
 
 		let weekGR = await queryGrades(token, st.id, sc[0].date.split('T')[0]);
 		for (let day in sc) {
@@ -73,36 +74,7 @@
 	});
 </script>
 
-<div
-	class="fixed flex h-10 w-full items-center justify-between bg-white align-middle dark:bg-slate-700"
->
-	<button class="dark:invert"><img src="/avg.png" width="50" alt="avg" /></button>
-	<div class="inline-flex">
-		{#if sc[0] && sc[sc.length - 1]}
-			<button
-				class="mx-2 h-fit rounded-full bg-slate-500 px-2 text-white"
-				on:click={() => {
-					prevWeek(date);
-				}}>&lt;&lt;</button
-			>
-			<button on:click={currentWeek} class=" dark:text-white">
-				{sc[0].date.split('T')[0]} &#x2022 {sc[sc.length - 1].date.split('T')[0]}
-			</button>
-			<button
-				class="mx-2 h-fit rounded-full bg-slate-500 px-2 text-white"
-				on:click={() => {
-					nextWeek(date);
-				}}>&gt;&gt;</button
-			>
-		{/if}
-	</div>
-	<button
-		class="mx-1 dark:invert"
-		on:click={() => {
-			DarkMode.set(!$DarkMode);
-		}}><DarkThemeIcon size="25" /></button
-	>
-</div>
+<Navbar currentPageDate={pageDate} schedule={sc} />
 
 <div class="flex w-fit flex-col pt-10 md:h-screen md:flex-wrap">
 	{#each sc as day}
