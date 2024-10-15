@@ -14,6 +14,7 @@
 
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Home from '$lib/components/Home.svelte';
+	import Average from '$lib/components/Average.svelte';
 
 	export let data: PageData;
 	const token = data.tkn;
@@ -21,6 +22,8 @@
 
 	let st: Student | null = null;
 	let sc: DaySchedule[] = [];
+
+	let showAverage: boolean = false;
 
 	function ISODate(day: DaySchedule) {
 		return day.date.split('T')[0];
@@ -48,9 +51,13 @@
 	});
 </script>
 
-<Navbar currentPageDate={pageDate} schedule={sc} />
+<Navbar currentPageDate={pageDate} schedule={sc} bind:showAverage />
 
-<Home schedule={sc} />
+{#if showAverage}
+	<Average />
+{:else}
+	<Home schedule={sc} />
+{/if}
 
 <button
 	class=" m-5 h-10 w-60 rounded-xl bg-slate-600 text-white"

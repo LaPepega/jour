@@ -6,12 +6,19 @@
 
 	export let schedule: DaySchedule[];
 	export let currentPageDate: string;
+
+	export let showAverage: boolean = false;
 </script>
 
 <div
 	class="fixed flex h-10 w-full items-center justify-between bg-white align-middle dark:bg-slate-700"
 >
-	<button class="dark:invert"><img src="/avg.png" width="50" alt="avg" /></button>
+	<button
+		class="dark:invert"
+		on:click={() => {
+			showAverage = !showAverage;
+		}}><img src="/avg.png" width="50" alt="avg" /></button
+	>
 	<div class="inline-flex">
 		{#if schedule[0] && schedule[schedule.length - 1]}
 			<button
