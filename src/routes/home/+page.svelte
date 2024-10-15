@@ -22,13 +22,19 @@
 	let st: Student | null = null;
 	let sc: DaySchedule[] = [];
 
+	function ISODate(day: DaySchedule) {
+		return day.date.split('T')[0];
+	}
+
 	onMount(async () => {
 		st = await queryStudent(token);
 		sc = await querySchedule(token, st.id, pageDate);
 
-		let weekGR = await queryGrades(token, st.id, sc[0].date.split('T')[0]);
+		let weekGR = await queryGrades(token, st.id, ISODate(sc[0]));
 		for (let day in sc) {
-			let dayHW = await queryHomework(token, st.id, sc[day].date.split('T')[0]);
+			let dayHW = await queryHomework(token, st.id, ISODate(sc[day]));
+
+			// Assigning grades and homeworks to their lessons
 			for (let l in sc[day].lessons) {
 				sc[day].lessons[l].homework = dayHW.find(
 					(h) => h.lessonNumber === sc[day].lessons[l].number
