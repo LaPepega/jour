@@ -13,7 +13,7 @@
 		type Student
 	} from '$lib/api';
 	import { currentWeek, nextWeek, prevWeek } from '$lib/navigation';
-	import DarkThemeIcon from '$lib/DarkThemeIcon.svg.svelte';
+	import DarkThemeIcon from '$lib/components/DarkThemeIcon.svg.svelte';
 	import { DarkMode } from '$lib/stores';
 
 	export let data: PageData;

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
-	import DarkThemeIcon from '$lib/DarkThemeIcon.svg.svelte';
+	import DarkThemeIcon from '$lib/components/DarkThemeIcon.svg.svelte';
 	import { DarkMode } from '$lib/stores';
 
 	let token: string;
