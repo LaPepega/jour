@@ -33,11 +33,15 @@
 		st = await queryStudent(token);
 		sc = await querySchedule(token, st.id, pageDate);
 
+		// Grades can only be requested for the whole week,
+		// Passing any day of the week is ok but I prefer Mondays
 		let weekGR = await queryGrades(token, st.id, ISODate(sc[0]));
 		for (let day in sc) {
+			// Homework can be requested for each specific day
 			let dayHW = await queryHomework(token, st.id, ISODate(sc[day]));
 
 			// Assigning grades and homeworks to their lessons
+			// according to lesson number property in both
 			for (let l in sc[day].lessons) {
 				sc[day].lessons[l].homework = dayHW.find(
 					(h) => h.lessonNumber === sc[day].lessons[l].number
