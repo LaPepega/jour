@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import type { PageData } from './$types';
 	import {
+		ISODate,
 		queryGrades,
 		queryHomework,
 		querySchedule,
@@ -24,10 +25,6 @@
 	let sc: DaySchedule[] = [];
 
 	let showAverage: boolean = false;
-
-	function ISODate(day: DaySchedule) {
-		return day.date.split('T')[0];
-	}
 
 	onMount(async () => {
 		st = await queryStudent(token);

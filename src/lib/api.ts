@@ -31,6 +31,10 @@ export interface DaySchedule {
 	lessons: Lesson[];
 }
 
+export function ISODate(day: DaySchedule) {
+	return day.date.split('T')[0];
+}
+
 export interface Homework {
 	id: string;
 	isDone: boolean;

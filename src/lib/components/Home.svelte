@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { DaySchedule, Lesson } from '$lib/api';
+	import { ISODate, type DaySchedule, type Lesson } from '$lib/api';
 
 	export let schedule: DaySchedule[];
 
@@ -39,7 +39,7 @@
 		<div class=" m-3 w-80 rounded-xl bg-white p-3 dark:bg-slate-800 dark:text-slate-200">
 			<div class="mb-2 flex justify-between">
 				<p class=" text-right text-lg text-slate-700 dark:text-slate-200">{day.weekdayName}</p>
-				<p class=" text-left text-lg">{day.date.split('T')[0]}</p>
+				<p class=" text-left text-lg">{ISODate(day)}</p>
 			</div>
 			{#each day.lessons as l}
 				<hr class=" border-slate-900 dark:border-slate-500" />
