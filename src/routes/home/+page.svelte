@@ -9,13 +9,11 @@
 		querySchedule,
 		queryStudent,
 		type DaySchedule,
-		type Lesson,
 		type Student
 	} from '$lib/api';
-	import { currentWeek, nextWeek, prevWeek } from '$lib/navigation';
-	import DarkThemeIcon from '$lib/components/DarkThemeIcon.svg.svelte';
-	import { DarkMode } from '$lib/stores';
+
 	import Navbar from '$lib/components/Navbar.svelte';
+	import Home from '$lib/components/Home.svelte';
 
 	export let data: PageData;
 	const token = data.tkn;
@@ -23,36 +21,6 @@
 
 	let st: Student | null = null;
 	let sc: DaySchedule[] = [];
-
-	// Yes i actually have to do this because of how bad the api is >:(
-	function timeSpanString(l: Lesson): string {
-		return l.beginHour && l.beginMinute && l.endHour && l.endMinute
-			? `${l.beginHour}:${l.beginMinute} - ${l.endHour}:${l.endMinute}`
-			: '';
-	}
-
-	function gradeColor(g: any): string {
-		//  for some reason svelte passes g as string[]
-		switch (g[0]) {
-			case '0':
-				return 'text-red-600';
-
-			case '2':
-				return 'text-red-600';
-
-			case '3':
-				return 'text-orange-600';
-
-			case '4':
-				return 'text-green-600';
-
-			case '5':
-				return 'text-blue-600 dark:text-blue-400';
-
-			default:
-				return '';
-		}
-	}
 
 	onMount(async () => {
 		st = await queryStudent(token);
@@ -76,35 +44,7 @@
 
 <Navbar currentPageDate={pageDate} schedule={sc} />
 
-<div class="flex w-fit flex-col pt-10 md:h-screen md:flex-wrap">
-	{#each sc as day}
-		<div class=" m-3 w-80 rounded-xl bg-white p-3 dark:bg-slate-800 dark:text-slate-200">
-			<div class="mb-2 flex justify-between">
-				<p class=" text-right text-lg text-slate-700 dark:text-slate-200">{day.weekdayName}</p>
-				<p class=" text-left text-lg">{day.date.split('T')[0]}</p>
-			</div>
-			{#each day.lessons as l}
-				<hr class=" border-slate-900 dark:border-slate-500" />
-				<div class="mb-3">
-					<p class="">{timeSpanString(l)} {l.lessonName}</p>
-					{#if l.homework}
-						<p class="break-words text-slate-500 dark:text-slate-400">{l.homework?.description}</p>
-					{/if}
-					{#if l.grades}
-						<div class="inline-flex">
-							{#each l.grades as g}
-								<!-- for some reason svelte passes g as string[]-->
-								<p class={gradeColor(g)}>{g}</p>
-							{/each}
-						</div>
-					{/if}
-				</div>
-			{/each}
-		</div>
-	{:else}
-		<p>Loading...</p>
-	{/each}
-</div>
+<Home schedule={sc} />
 
 <button
 	class=" m-5 h-10 w-60 rounded-xl bg-slate-600 text-white"
